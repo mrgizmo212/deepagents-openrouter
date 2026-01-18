@@ -129,6 +129,7 @@ body::before {
   -webkit-backdrop-filter: blur(60px) saturate(140%);
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -310,7 +311,21 @@ code[class*='language-'] {
 
 /* ===== SAFE AREA FOR MOBILE ===== */
 .safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+}
+
+/* Ensure proper mobile viewport handling */
+@supports (height: 100dvh) {
+  .mac-window {
+    height: 100dvh;
+  }
+}
+
+/* Fallback for browsers without dvh support */
+@supports not (height: 100dvh) {
+  .mac-window {
+    height: calc(100vh - env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ===== UTILITY CLASSES ===== */

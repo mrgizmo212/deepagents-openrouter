@@ -9,22 +9,22 @@ interface MobileNavProps {
 
 export function MobileNav({ activeTab, onTabChange, hasFiles, todoCount }: MobileNavProps): JSX.Element {
   return (
-    <div className="lg:hidden flex items-center justify-around px-2 py-2 border-t border-luxury-500/20 bg-luxury-900/95 backdrop-blur-xl shrink-0 safe-area-bottom">
+    <div className="flex items-center justify-around px-2 py-3 pb-[max(env(safe-area-inset-bottom,12px),12px)] border-t border-luxury-500/20 bg-luxury-900/95 backdrop-blur-xl shrink-0">
       <button
         onClick={() => onTabChange('chat')}
-        className={`flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all duration-200 ${
+        className={`flex flex-col items-center gap-1.5 px-6 py-2 rounded-xl transition-all duration-200 ${
           activeTab === 'chat'
             ? 'bg-accent-400/15 text-accent-400'
             : 'text-luxury-400 hover:text-luxury-200'
         }`}
       >
         <Icon name="MessageCircle" size={22} />
-        <span className="text-[10px] font-medium">Chat</span>
+        <span className="text-[11px] font-medium">Chat</span>
       </button>
 
       <button
         onClick={() => onTabChange('files')}
-        className={`flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all duration-200 relative ${
+        className={`flex flex-col items-center gap-1.5 px-6 py-2 rounded-xl transition-all duration-200 relative ${
           activeTab === 'files'
             ? 'bg-accent-400/15 text-accent-400'
             : 'text-luxury-400 hover:text-luxury-200'
@@ -36,12 +36,12 @@ export function MobileNav({ activeTab, onTabChange, hasFiles, todoCount }: Mobil
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent-400 rounded-full" />
           )}
         </div>
-        <span className="text-[10px] font-medium">Files</span>
+        <span className="text-[11px] font-medium">Files</span>
       </button>
 
       <button
         onClick={() => onTabChange('preview')}
-        className={`flex flex-col items-center gap-1 px-6 py-2 rounded-xl transition-all duration-200 relative ${
+        className={`flex flex-col items-center gap-1.5 px-6 py-2 rounded-xl transition-all duration-200 relative ${
           activeTab === 'preview'
             ? 'bg-accent-400/15 text-accent-400'
             : 'text-luxury-400 hover:text-luxury-200'
@@ -55,7 +55,7 @@ export function MobileNav({ activeTab, onTabChange, hasFiles, todoCount }: Mobil
             </span>
           )}
         </div>
-        <span className="text-[10px] font-medium">Preview</span>
+        <span className="text-[11px] font-medium">Preview</span>
       </button>
     </div>
   );

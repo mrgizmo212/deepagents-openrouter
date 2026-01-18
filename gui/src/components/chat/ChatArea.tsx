@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { ThinkingBubble } from './ThinkingBubble';
 import { ChatInput } from './ChatInput';
@@ -32,6 +32,16 @@ export function ChatArea({
   const [isUserAtBottom, setIsUserAtBottom] = useState(true);
   const [hasNewMessages, setHasNewMessages] = useState(false);
   const lastMessageCountRef = useRef(messages.length);
+
+  // Check if the last message is from the assistant (streaming response)
+  const isStreamingResponse = useMemo(() => {
+    if (!isLoading || messages.length === 0) return false;
+    const lastMessage = messages[messages.length - 1];
+    return lastMessage.role === 'assistant' && lastMessage.content;
+  }, [isLoading, messages]);
+
+  // Only show thinking bubble if loading AND not already streaming a response
+  const showThinkingBubble = isLoading && !isStreamingResponse;
 
   // Check if user is at the bottom of the scroll container
   const checkIfAtBottom = useCallback(() => {
@@ -147,7 +157,8 @@ export function ChatArea({
           />
         ))}
 
-        {isLoading && <ThinkingBubble />}
+        {/* Only show thinking bubble when loading AND no response is streaming yet */}
+        {showThinkingBubble && <ThinkingBubble />}
 
         <div ref={chatEndRef} />
       </div>
