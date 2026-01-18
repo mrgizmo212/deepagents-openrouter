@@ -86,7 +86,10 @@ export function ChatArea({
   }, [messages, isUserAtBottom]);
 
   return (
-    <div className={`flex-1 flex flex-col border-r border-luxury-500/20 bg-luxury-850/60 backdrop-blur-xl relative ${isMobile ? 'min-w-0' : 'min-w-[400px]'}`}>
+    <div 
+      className={`flex-1 flex flex-col border-r border-luxury-500/20 bg-luxury-850/60 backdrop-blur-xl relative ${isMobile ? 'min-w-0 h-full' : 'min-w-[400px]'}`}
+      style={{ minHeight: 0 }}
+    >
       {/* Header - Hidden on mobile since we have the top bar */}
       <div className={`h-14 lg:h-18 border-b border-luxury-500/20 flex items-center justify-between px-4 lg:px-8 bg-luxury-800/40 backdrop-blur-2xl shrink-0 ${isMobile ? 'hidden lg:flex' : ''}`}>
         <div className="flex flex-col gap-0.5">
@@ -113,11 +116,16 @@ export function ChatArea({
         )}
       </div>
 
-      {/* Messages */}
+      {/* Messages - with proper mobile scroll handling */}
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-4 lg:space-y-8 mac-scrollbar relative"
+        className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-8 space-y-4 lg:space-y-8 mac-scrollbar relative overscroll-contain"
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          touchAction: 'pan-y',
+          minHeight: 0,
+        }}
       >
         {messages.length === 0 && !isThreadLoading && (
           <div className="flex flex-col items-center justify-center h-full">

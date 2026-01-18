@@ -215,11 +215,11 @@ export function NewThread(): JSX.Element {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row bg-transparent overflow-hidden min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row bg-transparent min-h-0" style={{ overflow: 'hidden' }}>
         {/* Mobile Tab Content */}
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
+        <div className="flex-1 flex flex-col lg:flex-row min-h-0" style={{ overflow: 'hidden' }}>
           {/* Chat - Always visible on desktop, conditional on mobile */}
-          <div className={`flex-1 flex flex-col min-h-0 ${mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'}`}>
+          <div className={`flex-1 flex flex-col ${mobileTab !== 'chat' ? 'hidden lg:flex' : 'flex'}`} style={{ minHeight: 0, overflow: 'hidden' }}>
             <ChatArea
               messages={messages}
               isLoading={isLoading}

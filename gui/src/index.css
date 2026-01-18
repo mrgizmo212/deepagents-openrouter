@@ -328,6 +328,23 @@ code[class*='language-'] {
   }
 }
 
+/* ===== MOBILE SCROLL FIX ===== */
+@media (max-width: 1023px) {
+  .mac-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+}
+
+/* Ensure scroll containers work on iOS */
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ===== UTILITY CLASSES ===== */
 .text-gradient-gold {
   background: linear-gradient(135deg, #D4A65A 0%, #E8C896 50%, #C69643 100%);
