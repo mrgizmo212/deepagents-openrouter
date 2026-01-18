@@ -251,12 +251,14 @@ export function NewThread(): JSX.Element {
         </div>
 
         {/* Mobile Bottom Navigation */}
-        <MobileNav 
-          activeTab={mobileTab} 
-          onTabChange={setMobileTab}
-          hasFiles={fileTree.length > 0}
-          todoCount={todos.filter(t => t.status !== 'completed').length}
-        />
+        <div className="lg:hidden relative z-20">
+          <MobileNav 
+            activeTab={mobileTab} 
+            onTabChange={setMobileTab}
+            hasFiles={fileTree.length > 0}
+            todoCount={todos.filter(t => t.status !== 'completed').length}
+          />
+        </div>
       </div>
     </div>
   );
