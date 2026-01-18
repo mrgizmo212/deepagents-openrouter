@@ -308,6 +308,11 @@ code[class*='language-'] {
   word-wrap: break-word !important;
 }
 
+/* ===== SAFE AREA FOR MOBILE ===== */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ===== UTILITY CLASSES ===== */
 .text-gradient-gold {
   background: linear-gradient(135deg, #D4A65A 0%, #E8C896 50%, #C69643 100%);

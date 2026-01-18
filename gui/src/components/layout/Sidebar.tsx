@@ -13,6 +13,7 @@ interface SidebarProps {
   isLoadingThreads?: boolean;
   onSelectThread: (threadId: string) => void;
   onNewThread: () => void;
+  isMobile?: boolean;
 }
 
 function formatDate(date: Date): string {
@@ -35,17 +36,18 @@ export function Sidebar({
   isLoadingThreads,
   onSelectThread,
   onNewThread,
+  isMobile = false,
 }: SidebarProps): JSX.Element {
   return (
-    <div className="w-[240px] h-full mac-sidebar flex flex-col shrink-0 pt-4">
+    <div className={`${isMobile ? 'w-full h-full' : 'w-[240px] h-full'} mac-sidebar flex flex-col shrink-0 ${isMobile ? 'pt-0' : 'pt-4'}`}>
       {/* New Thread button */}
-      <div className="px-3 mb-4">
+      <div className={`px-3 mb-4 ${isMobile ? 'mt-4' : ''}`}>
         <div
           onClick={onNewThread}
           className="
             group
             flex items-center gap-2
-            px-3 py-2.5
+            px-3 py-3
             rounded-lg
             bg-accent-400/10
             border border-accent-400/20
@@ -53,11 +55,12 @@ export function Sidebar({
             hover:bg-accent-400/15
             cursor-pointer
             transition-all duration-200
+            active:scale-[0.98]
           "
         >
-          <Icon name="Plus" size={16} className="text-accent-400" />
+          <Icon name="Plus" size={18} className="text-accent-400" />
           <span className="text-sm font-medium text-accent-400 group-hover:text-accent-300">
-            New
+            New Conversation
           </span>
         </div>
       </div>
@@ -68,12 +71,12 @@ export function Sidebar({
           <Icon
             name="Search"
             size={14}
-            className="absolute left-3 top-2.5 text-luxury-400 group-focus-within:text-accent-400 transition-colors duration-200"
+            className="absolute left-3 top-3 text-luxury-400 group-focus-within:text-accent-400 transition-colors duration-200"
           />
           <input
             type="text"
-            placeholder=""
-            className="mac-input w-full rounded-lg py-2 pl-9 pr-3 text-sm bg-luxury-800/50"
+            placeholder="Search conversations..."
+            className="mac-input w-full rounded-lg py-2.5 pl-9 pr-3 text-sm bg-luxury-800/50"
           />
         </div>
       </div>
@@ -85,7 +88,7 @@ export function Sidebar({
         {isLoadingThreads && (
           <div className="space-y-1">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="skeleton h-12 mx-1 rounded-lg" />
+              <div key={i} className="skeleton h-14 mx-1 rounded-lg" />
             ))}
           </div>
         )}
@@ -98,12 +101,14 @@ export function Sidebar({
             className={`
               group
               flex flex-col
-              px-3 py-2
+              px-3 py-3
               mx-1
+              mb-1
               rounded-lg
               cursor-pointer
               transition-all duration-200
               animate-fade-in
+              active:scale-[0.98]
               ${
                 thread.id === currentThreadId
                   ? 'bg-primary/15 border border-primary/25 text-luxury-50'
@@ -120,10 +125,11 @@ export function Sidebar({
         {/* Empty state */}
         {!isLoadingThreads && threads.length === 0 && (
           <div className="px-3 py-12 text-center">
-            <div className="w-10 h-10 mx-auto mb-3 rounded-lg bg-luxury-800/50 border border-luxury-600/20 flex items-center justify-center animate-float">
-              <Icon name="MessageCircle" size={16} className="text-luxury-400/40" />
+            <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-luxury-800/50 border border-luxury-600/20 flex items-center justify-center animate-float">
+              <Icon name="MessageCircle" size={20} className="text-luxury-400/40" />
             </div>
-            <p className="text-xs font-medium text-luxury-400">Empty</p>
+            <p className="text-sm font-medium text-luxury-400">No conversations yet</p>
+            <p className="text-xs text-luxury-500 mt-1">Start a new conversation above</p>
           </div>
         )}
       </div>

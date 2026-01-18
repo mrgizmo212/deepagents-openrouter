@@ -29,13 +29,13 @@ export function ChatInput({ onSend, onStop, disabled = false, isLoading = false 
   );
 
   return (
-    <div className="p-6 pt-4">
+    <div className="p-3 lg:p-6 pt-2 lg:pt-4 safe-area-bottom">
       <div className="
         bg-luxury-800/80
         backdrop-blur-2xl
         border border-luxury-500/20
-        rounded-2xl
-        p-1.5
+        rounded-xl lg:rounded-2xl
+        p-1 lg:p-1.5
         flex items-center
         shadow-2xl shadow-black/30
         relative
@@ -55,13 +55,14 @@ export function ChatInput({ onSend, onStop, disabled = false, isLoading = false 
           className="
             bg-transparent
             flex-1
-            px-4 py-3
+            px-3 lg:px-4 py-2.5 lg:py-3
             outline-none
-            text-base
+            text-sm lg:text-base
             text-luxury-50
             placeholder-luxury-400
             disabled:opacity-50
             font-medium
+            min-w-0
           "
         />
 
@@ -70,8 +71,8 @@ export function ChatInput({ onSend, onStop, disabled = false, isLoading = false 
             type="button"
             onClick={onStop}
             className="
-              p-2.5
-              rounded-xl
+              p-2 lg:p-2.5
+              rounded-lg lg:rounded-xl
               transition-all duration-300
               bg-gradient-to-br from-status-error/90 to-status-error/70
               hover:from-status-error hover:to-status-error/80
@@ -79,6 +80,7 @@ export function ChatInput({ onSend, onStop, disabled = false, isLoading = false 
               shadow-lg shadow-status-error/30
               hover:shadow-xl hover:shadow-status-error/40
               active:scale-95
+              shrink-0
             "
           >
             <Icon name="Square" size={18} strokeWidth={2.5} />
@@ -89,9 +91,10 @@ export function ChatInput({ onSend, onStop, disabled = false, isLoading = false 
             onClick={handleSend}
             disabled={disabled || !value.trim()}
             className={`
-              p-2.5
-              rounded-xl
+              p-2 lg:p-2.5
+              rounded-lg lg:rounded-xl
               transition-all duration-300
+              shrink-0
               ${
                 value.trim() && !disabled
                   ? 'bg-gradient-to-br from-accent-400 to-accent-500 text-luxury-900 shadow-lg shadow-accent-400/30 hover:shadow-xl hover:shadow-accent-400/40 hover:-translate-y-0.5 active:scale-95'

@@ -15,6 +15,7 @@ interface ChatAreaProps {
   writingStatus: string | null;
   onSendMessage: (content: string) => void;
   onStop?: () => void;
+  isMobile?: boolean;
 }
 
 export function ChatArea({
@@ -24,6 +25,7 @@ export function ChatArea({
   writingStatus,
   onSendMessage,
   onStop,
+  isMobile = false,
 }: ChatAreaProps): JSX.Element {
   const chatEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -74,14 +76,14 @@ export function ChatArea({
   }, [messages, isUserAtBottom]);
 
   return (
-    <div className="flex-1 flex flex-col min-w-[400px] border-r border-luxury-500/20 bg-luxury-850/60 backdrop-blur-xl relative">
-      {/* Header */}
-      <div className="h-18 border-b border-luxury-500/20 flex items-center justify-between px-8 bg-luxury-800/40 backdrop-blur-2xl">
+    <div className={`flex-1 flex flex-col border-r border-luxury-500/20 bg-luxury-850/60 backdrop-blur-xl relative ${isMobile ? 'min-w-0' : 'min-w-[400px]'}`}>
+      {/* Header - Hidden on mobile since we have the top bar */}
+      <div className={`h-14 lg:h-18 border-b border-luxury-500/20 flex items-center justify-between px-4 lg:px-8 bg-luxury-800/40 backdrop-blur-2xl shrink-0 ${isMobile ? 'hidden lg:flex' : ''}`}>
         <div className="flex flex-col gap-0.5">
-          <span className="font-display font-semibold text-luxury-50 tracking-tight text-base">
+          <span className="font-display font-semibold text-luxury-50 tracking-tight text-sm lg:text-base">
             Coding Agent
           </span>
-          <span className="text-[11px] text-luxury-300 flex items-center gap-2">
+          <span className="text-[10px] lg:text-[11px] text-luxury-300 flex items-center gap-2">
             <span
               className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                 isLoading
@@ -89,14 +91,14 @@ export function ChatArea({
                   : 'bg-luxury-400'
               }`}
             />
-            <span className="font-medium">{isLoading ? 'Exploring' : 'Ready'}</span>
+            <span className="font-medium">{isLoading ? 'Working' : 'Ready'}</span>
           </span>
         </div>
 
         {writingStatus && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-accent-400/10 border border-accent-400/20 rounded-xl animate-scale-in">
+          <div className="flex items-center gap-2 px-3 lg:px-4 py-1.5 lg:py-2 bg-accent-400/10 border border-accent-400/20 rounded-xl animate-scale-in">
             <Icon name="PenTool" size={12} className="text-accent-400 animate-float" />
-            <span className="text-[11px] font-mono font-medium text-accent-300">{writingStatus}</span>
+            <span className="text-[10px] lg:text-[11px] font-mono font-medium text-accent-300">{writingStatus}</span>
           </div>
         )}
       </div>
@@ -105,29 +107,34 @@ export function ChatArea({
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-8 space-y-8 mac-scrollbar relative"
+        className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-4 lg:space-y-8 mac-scrollbar relative"
       >
         {messages.length === 0 && !isThreadLoading && (
           <div className="flex flex-col items-center justify-center h-full">
-            <div className="relative mb-8">
-              <div className="absolute inset-0 w-20 h-20 rounded-full bg-accent-400/5 animate-ping-slow" />
-              <div className="w-20 h-20 rounded-full bg-luxury-800/50 border border-luxury-600/30 flex items-center justify-center">
-                <Icon name="Sparkles" size={28} className="text-accent-400/60" />
+            <div className="relative mb-6 lg:mb-8">
+              <div className="absolute inset-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-accent-400/5 animate-ping-slow" />
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-luxury-800/50 border border-luxury-600/30 flex items-center justify-center">
+                <Icon name="Sparkles" size={24} className="text-accent-400/60 lg:hidden" />
+                <Icon name="Sparkles" size={28} className="text-accent-400/60 hidden lg:block" />
               </div>
             </div>
-            <p className="text-lg font-display font-medium text-luxury-100 tracking-tight">Begin</p>
+            <p className="text-base lg:text-lg font-display font-medium text-luxury-100 tracking-tight">Begin</p>
+            <p className="text-xs lg:text-sm text-luxury-400 mt-2 text-center px-4">
+              Describe what you want to build
+            </p>
           </div>
         )}
 
         {isThreadLoading && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full">
-            <div className="relative mb-8">
-              <div className="absolute inset-0 w-20 h-20 rounded-full bg-luxury-400/5 animate-ping-slow" />
-              <div className="w-20 h-20 rounded-full bg-luxury-800/50 border border-luxury-600/30 flex items-center justify-center">
-                <Icon name="Loader2" size={28} className="text-luxury-300 animate-spin" />
+            <div className="relative mb-6 lg:mb-8">
+              <div className="absolute inset-0 w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-luxury-400/5 animate-ping-slow" />
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-luxury-800/50 border border-luxury-600/30 flex items-center justify-center">
+                <Icon name="Loader2" size={24} className="text-luxury-300 animate-spin lg:hidden" />
+                <Icon name="Loader2" size={28} className="text-luxury-300 animate-spin hidden lg:block" />
               </div>
             </div>
-            <p className="text-lg font-display font-medium text-luxury-100 tracking-tight">Loading</p>
+            <p className="text-base lg:text-lg font-display font-medium text-luxury-100 tracking-tight">Loading</p>
           </div>
         )}
 
@@ -149,7 +156,7 @@ export function ChatArea({
       {hasNewMessages && (
         <button
           onClick={scrollToBottom}
-          className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-400 text-luxury-900 rounded-full shadow-lg transition-all duration-200 animate-scale-in font-medium text-sm"
+          className="absolute bottom-20 lg:bottom-24 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-3 lg:px-4 py-1.5 lg:py-2 bg-accent-500 hover:bg-accent-400 text-luxury-900 rounded-full shadow-lg transition-all duration-200 animate-scale-in font-medium text-xs lg:text-sm"
         >
           <Icon name="ChevronDown" size={14} />
           <span>New messages</span>

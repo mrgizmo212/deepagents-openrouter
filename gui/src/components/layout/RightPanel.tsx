@@ -22,6 +22,10 @@ interface RightPanelProps {
   animatingPreviousContent?: string;
   /** Callback to send deployment error to chat for fixing */
   onAskToFix?: (error: string) => void;
+  /** Current mobile tab */
+  mobileTab?: 'chat' | 'files' | 'preview';
+  /** Whether in mobile mode */
+  isMobile?: boolean;
 }
 
 export function RightPanel({
@@ -35,6 +39,8 @@ export function RightPanel({
   animatingFilePath,
   animatingPreviousContent = '',
   onAskToFix,
+  mobileTab = 'files',
+  isMobile = false,
 }: RightPanelProps): JSX.Element {
   const [activeTab, setActiveTab] = useState<RightPanelTab>('filesystem');
   const [previewMode, setPreviewMode] = useState<PreviewMode>('code');
@@ -55,26 +61,37 @@ export function RightPanel({
     }
   };
 
+  // On mobile, determine what to show based on mobileTab
+  const showFilesView = isMobile ? mobileTab === 'files' : true;
+  const showPreviewView = isMobile ? mobileTab === 'preview' : true;
+
+  // Mobile: show app preview when on preview tab
+  const effectivePreviewMode = isMobile && mobileTab === 'preview' ? 'app' : previewMode;
+
   return (
     <>
       <div
-        className="flex flex-col bg-luxury-850/80 backdrop-blur-2xl border-l border-luxury-500/20 relative"
-        style={{ width, cursor: isDragging ? 'col-resize' : 'default' }}
+        className={`flex flex-col bg-luxury-850/80 backdrop-blur-2xl border-l border-luxury-500/20 relative ${
+          isMobile ? 'w-full h-full' : ''
+        }`}
+        style={isMobile ? {} : { width, cursor: isDragging ? 'col-resize' : 'default' }}
       >
-        {/* Drag Handle */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-50 resizer-handle"
-          onMouseDown={handleMouseDown}
-        />
+        {/* Drag Handle - Desktop only */}
+        {!isMobile && (
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize z-50 resizer-handle"
+            onMouseDown={handleMouseDown}
+          />
+        )}
 
         {/* Header */}
-        <div className="h-18 flex items-center px-5 border-b border-luxury-500/20 bg-luxury-800/40 shrink-0 justify-between">
-          {previewMode !== 'app' ? (
+        <div className={`${isMobile ? 'h-14' : 'h-18'} flex items-center px-3 lg:px-5 border-b border-luxury-500/20 bg-luxury-800/40 shrink-0 justify-between`}>
+          {effectivePreviewMode !== 'app' ? (
             <div className="flex bg-luxury-900/60 p-1 rounded-xl border border-luxury-600/20">
               <button
                 type="button"
                 onClick={() => setActiveTab('todos')}
-                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 flex items-center gap-1.5 ${
+                className={`px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg text-xs font-semibold transition-all duration-300 flex items-center gap-1.5 ${
                   activeTab === 'todos'
                     ? 'bg-gradient-to-br from-luxury-700 to-luxury-750 text-luxury-50 shadow-lg border border-luxury-500/30'
                     : 'text-luxury-400 hover:text-luxury-200 hover:bg-luxury-800/50'
@@ -90,13 +107,13 @@ export function RightPanel({
               <button
                 type="button"
                 onClick={() => setActiveTab('filesystem')}
-                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
+                className={`px-3 lg:px-4 py-1.5 lg:py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
                   activeTab === 'filesystem'
                     ? 'bg-gradient-to-br from-luxury-700 to-luxury-750 text-luxury-50 shadow-lg border border-luxury-500/30'
                     : 'text-luxury-400 hover:text-luxury-200 hover:bg-luxury-800/50'
                 }`}
               >
-                Filesystem
+                Files
               </button>
             </div>
           ) : (
@@ -105,7 +122,7 @@ export function RightPanel({
             </div>
           )}
 
-          {activeTab === 'filesystem' && (
+          {activeTab === 'filesystem' && !isMobile && (
             <div className="flex bg-luxury-900/60 p-1 rounded-xl border border-luxury-600/20">
               <button
                 type="button"
@@ -133,11 +150,29 @@ export function RightPanel({
               </button>
             </div>
           )}
+
+          {/* Mobile: Show code/preview toggle when on files tab */}
+          {isMobile && mobileTab === 'files' && activeTab === 'filesystem' && (
+            <div className="flex bg-luxury-900/60 p-1 rounded-xl border border-luxury-600/20">
+              <button
+                type="button"
+                onClick={() => setPreviewMode('code')}
+                className={`p-1.5 rounded-lg transition-all duration-300 ${
+                  previewMode === 'code'
+                    ? 'bg-luxury-700 text-luxury-50 shadow-md'
+                    : 'text-luxury-400 hover:text-luxury-200'
+                }`}
+                title="Code View"
+              >
+                <Icon name="Code" size={14} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col overflow-hidden relative">
-          {activeTab === 'filesystem' && previewMode === 'app' ? (
+        <div className="flex-1 flex flex-col overflow-hidden relative min-h-0">
+          {(isMobile && mobileTab === 'preview') || (!isMobile && activeTab === 'filesystem' && previewMode === 'app') ? (
             <div className="flex-1 bg-white animate-fade-in overflow-hidden">
               <AppPreview
                 files={files}
