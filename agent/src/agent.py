@@ -5,7 +5,7 @@ from pathlib import Path
 
 from deepagents import create_deep_agent
 from deepagents.backends import StateBackend
-from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 
 from src.prompts import SYSTEM_PROMPT
 from src.skills import SkillsMiddleware
@@ -41,15 +41,36 @@ def create_frontend_agent():
         ),
     ]
 
-    model_name = os.environ.get("MODEL", "claude-sonnet-4-5-20250929")
-    # Strip provider prefix if present (e.g., "anthropic:claude-sonnet-4-5-20250929")
-    if ":" in model_name:
-        model_name = model_name.split(":", 1)[1]
-
-    model = ChatAnthropic(
-        model_name=model_name,
-        max_tokens=20000,
-    )
+    # Get model from environment, default to Claude Opus 4.5 via OpenRouter
+    model_name = os.environ.get("MODEL", "anthropic/claude-opus-4.5")
+    
+    # OpenRouter configuration
+    openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
+    
+    if openrouter_api_key:
+        # Use OpenRouter
+        model = ChatOpenAI(
+            model=model_name,
+            api_key=openrouter_api_key,
+            base_url="https://openrouter.ai/api/v1",
+            max_tokens=20000,
+            default_headers={
+                "HTTP-Referer": os.environ.get("SITE_URL", "http://localhost:5173"),
+                "X-Title": os.environ.get("SITE_NAME", "DeepAgents Open Lovable"),
+            },
+        )
+    else:
+        # Fallback to direct Anthropic API if no OpenRouter key
+        from langchain_anthropic import ChatAnthropic
+        # Strip provider prefix if present (e.g., "anthropic:claude-sonnet-4-5-20250929")
+        if ":" in model_name:
+            model_name = model_name.split(":", 1)[1]
+        elif "/" in model_name:
+            model_name = model_name.split("/", 1)[1]
+        model = ChatAnthropic(
+            model_name=model_name,
+            max_tokens=20000,
+        )
 
     return create_deep_agent(
         model=model,
